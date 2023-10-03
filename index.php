@@ -2,8 +2,19 @@
 <html lang="ru">
     <head>
         <meta charset="utf-8"/>
-        <title>Реакция Белоусова-Жабатинского</title>
+        <title>Реакция Белоусова-Жаботинского</title>
         <link rel="stylesheet" href="css/styles.css"/>
+        <?php
+        $libs_list = [
+            "sylvester",
+            "gl_utils",
+            "camera",
+            "canvas"
+        ];
+        foreach ($libs_list as $lib) {
+            echo '<script type="text/javascript" src="js/' . $lib . '.js"></script>';
+        }
+        ?>
         <script type="text/javascript" src="js/script.js"></script>
     </head>
     <body>
