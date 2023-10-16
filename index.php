@@ -9,6 +9,7 @@
             "sylvester",
             "gl_utils",
             "camera",
+            "graph",
             "canvas"
         ];
         foreach ($libs_list as $lib) {
