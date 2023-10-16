@@ -1,5 +1,6 @@
-let gl, shaderProgram, vertexPositionAttribute, viewSize, verticesBuffer, verticesNumber, camera;
+let gl, shaderProgram, vertexPositionAttribute, viewSize, graph, camera, axes;
 
+let view_distanse = 100.0;
 let gl_options = {
     antialias: true
 };
@@ -12,7 +13,8 @@ async function startDraw(canvas) {
 
     initWebGL(canvas);
     if (!gl) return;
-    verticesBuffer = gl.createBuffer();
+    initSpace();
+    graph = new Graph(gl.createBuffer());
     await initShaders();
 
     gl.clearColor(0.95, 0.95, 0.95, 1.0);
@@ -36,25 +38,64 @@ function initWebGL(canvas) {
     }
 }
 
+function initSpace() {
+    axes = [
+        new Graph(gl.createBuffer()),
+        new Graph(gl.createBuffer()),
+        new Graph(gl.createBuffer())
+    ];
+    let color;
+    for (let i = 0; i < 3; i++) {
+        color = axes[i].color;
+        color[i] = view_distanse;
+        axes[i].color = color;
+
+        axes[i].loadVertices([
+             color[0]*  color[1],  color[2],
+            -color[0], -color[1], -color[2]
+        ], gl);
+    }
+}
+
+function updateSpace() {
+    let vertex1, vertex2;
+    for (let i = 0; i < axes.length; i++) {
+        vertex1 = vertex2 = [0.0, 0.0, 0.0];
+        vertex1[i] = vertex2[i] = camera.position[i];
+        vertex1[i] += view_distanse;
+        vertex2[i] -= view_distanse;
+        axes[i].loadVertices([
+            vertex1[0], vertex1[1], vertex1[2],
+            vertex2[0], vertex2[1], vertex2[2]
+       ], gl);
+    }
+}
+
 function loadVertices(vertices = []) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-
-    verticesNumber = vertices.length/3;
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
+    graph.loadVertices(vertices, gl);
 }
 
 function drawScene() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     setMatrixUniforms(
-        gl_utils.getPerspectiveMatrix(camera.zoom, viewSize.width, viewSize.height, 0.01, 100.0),
+        gl_utils.getPerspectiveMatrix(camera.zoom, viewSize.width, viewSize.height, 0.01, view_distanse),
         camera.view_matrix
     );
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+    for (let i = 0; i < axes.length; i++) {
+        setColorUniform(axes[i].color);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, axes[i].verticesBuffer);
+        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.LINE_STRIP, 0, axes[i].verticesNumber);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    }
+
+    setColorUniform(graph.color);
+    gl.bindBuffer(gl.ARRAY_BUFFER, graph.verticesBuffer);
     gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.LINE_STRIP, 0, verticesNumber);
+    gl.drawArrays(gl.LINE_STRIP, 0, graph.verticesNumber);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
 
@@ -124,5 +165,13 @@ function setMatrixUniforms(pMatrix, mvMatrix) {
             mvMatrix.e(3, 1), mvMatrix.e(3, 2), mvMatrix.e(3, 3), mvMatrix.e(3, 4),
             mvMatrix.e(4, 1), mvMatrix.e(4, 2), mvMatrix.e(4, 3), mvMatrix.e(4, 4)
         ])
+    );
+}
+
+function setColorUniform(color) {
+    let colorUniform = gl.getUniformLocation(shaderProgram, "color");
+    gl.uniform4fv(
+        colorUniform,
+        new Float32Array(color)
     );
 }
