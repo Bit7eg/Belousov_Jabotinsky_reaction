@@ -1,18 +1,13 @@
 <?php
-$FUNCTION = $_GET["func"];
-$METHOD = $_GET["algorithm"];
+$output = "";
+$errors = [];
+$errors_num = 0;
+$h = $X_N - $X_0;
 
-$h = ($X_N - $X_0);
+require_once "get_zero.php";
+$EPSILON = getZero();
 
-//  f()    $X_0    $X_N    $Y_0
-require "functions/" . $FUNCTION . ".php";
-
-require "methods/" . $METHOD . ".php";
-
-require "net.php";
-
-echo "{\n";
-    echo "\"errors\": [";
+while ($h > $EPSILON && $errors_num < 20) {
     $x = getNet();
     $y = solve($x);
     $error = abs($y[0] - phi($x[0]));
@@ -22,24 +17,12 @@ echo "{\n";
             $error = $i_error;
         }
     }
-    $errors = "" . $error;
+    $errors_num = array_push($errors, $error);
     $h /= 2;
+}
 
-    while ($h > 2**(-10)) {
-        $x = getNet();
-        $y = solve($x);
-        $error = abs($y[0] - phi($x[0]));
-        for ($i=1; $i < count($x); $i++) { 
-            $i_error = abs($y[$i] - phi($x[$i]));
-            if ($error < $i_error) {
-                $error = $i_error;
-            }
-        }
-        $errors = $error . ", " . $errors;
-        $h /= 2;
-    }
-    echo $errors;
-    echo "],\n";
-echo "}\n";
+for ($i = $errors_num-1; $i >= 0; $i--) { 
+    $output = $output . ($errors_num - $i) . " " . $errors[$i] . "\n";
+}
 
 ?>
