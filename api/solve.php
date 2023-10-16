@@ -10,18 +10,7 @@ require "methods/" . $METHOD . ".php";
 
 $h = ($X_N - $X_0)/$N;
 
-function getNet() {
-    global $X_0, $X_N, $h;
-    $x = [$X_0];
-    $i = 0;
-
-    while ($x[$i] < $X_N) {
-        $i += 1;
-        array_push($x, $h*$i + $X_0);
-    }
-
-    return $x;
-}
+require "net.php";
 
 $x = getNet();
 $y = solve($x);
