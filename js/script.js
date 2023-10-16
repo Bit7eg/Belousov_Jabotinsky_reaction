@@ -102,6 +102,7 @@ async function initCanvas(canvas) {
                 camera.move(Camera.direction.DOWN);
             }
             drawScene();
+            updateSpace();
             
             if (is_canvas_focused) {
                 setTimeout(gameCycle, 0);
