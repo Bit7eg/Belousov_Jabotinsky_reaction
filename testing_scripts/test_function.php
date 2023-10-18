@@ -1,5 +1,5 @@
 <?php
-function test(string $FUNCTION, string $METHOD, int $N): void {
+function test(string $FUNCTION, string $METHOD, int $N, $scripts): void {
     //  f()    $X_0    $X_N    $Y_0
     require "functions/" . $FUNCTION . ".php";
 
@@ -20,13 +20,20 @@ function test(string $FUNCTION, string $METHOD, int $N): void {
         return $x;
     }
 
-    include "solution.php";
-    file_put_contents("plots/" . $FUNCTION . "_solution.gpl", $output);
+    if (in_array("solution", $scripts)) {
+        include "solution.php";
+        file_put_contents("plots/" . $FUNCTION . "_solution.gpl", $output);
+    }
 
-    include "solve.php";
-    file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_" . $N . "_solve.gpl", $output);
+    if (in_array("solve", $scripts)) {
+        include "solve.php";
+        file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_" . $N . "_solve.gpl", $output);
+    }
 
-    include "errors.php";
-    file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_errors.gpl", $output);
+    if (in_array("errors", $scripts)) {
+        include "errors.php";
+        file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_errors.gpl", $output);
+        file_put_contents("orders/" . $FUNCTION . "_" . $METHOD . "_orders.txt", $order_output);
+    }
 }
 ?>
