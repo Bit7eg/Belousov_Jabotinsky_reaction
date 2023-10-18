@@ -1,5 +1,6 @@
 <?php
 $output = "";
+$order_output = "";
 $errors = [];
 $errors_num = 0;
 $h = $X_N - $X_0;
@@ -21,8 +22,15 @@ while ($h > $EPSILON && $errors_num < 20) {
     $h /= 2;
 }
 
-for ($i = $errors_num-1; $i >= 0; $i--) { 
-    $output = $output . ($errors_num - $i) . " " . $errors[$i] . "\n";
+$h = $X_N - $X_0;
+$output = $h . " " . $errors[0] . "\n";
+$h /= 2;
+for ($i = 1; $i < $errors_num; $i++) { 
+    $order_output = $order_output . $h . " " . log($errors[$i-1]/$errors[$i], 2) . "\n";
+    
+    $output = $output . $h . " " . $errors[$i] . "\n";
+    $h /= 2;
 }
 
+$h = ($X_N - $X_0)/$N;
 ?>
