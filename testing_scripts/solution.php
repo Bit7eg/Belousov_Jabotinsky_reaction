@@ -1,9 +1,10 @@
 <?php
 $output = "";
+$h = ($X_N - $X_0)/(10**4);
 
-$x = getNet();
-
-for ($i=0; $i < count($x); $i++) { 
-    $output = $output . $x[$i] . " " . phi($x[$i]) . "\n";
+for ($x=$X_0; $x <= $X_N; $x+=$h) { 
+    $output = $output . $x . " " . phi($x) . "\n";
 }
+
+$h = ($X_N - $X_0)/$N;
 ?>
