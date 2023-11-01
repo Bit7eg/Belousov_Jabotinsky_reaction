@@ -4,7 +4,7 @@ function solve($x_array) {
     $y = [$Y_0];
 
     for ($i=1; $i < count($x_array); $i++) { 
-        array_push($y, $y[$i-1] + $h*f($x_array[$i-1], $y[$i-1]));
+        array_push($y, $y[$i-1] + f($x_array[$i-1], $y[$i-1])*$h);
     }
 
     return $y;
