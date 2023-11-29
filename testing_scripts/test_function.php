@@ -1,6 +1,16 @@
 <?php
 $FUNCTION = "test-1";
-$METHOD = "adams-bashforth-moulton";
+/*
+    "adams-bashforth-moulton",
+    "adams",
+    "euler",
+    "geer4",
+    "iterations",
+    "runge-kutta3",
+    "runge-kutta4",
+    "runge-kutta5",
+*/
+$METHOD = "runge-kutta4";
 $N = 64;
 /* возможные:
     "solution",
@@ -36,17 +46,22 @@ if (in_array("solution", $scripts)) {
 }
 
 if (in_array("solve", $scripts)) {
+    $times = "";
     for (; $N < 2**15; $N*=2) { 
         $h = ($X_N - $X_0)/$N;
         include "solve.php";
+        $times .= $N . " " . $time . "\n";
         file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_" . $N . "_solve.gpl", $output);
     }
+    file_put_contents("times/" . $FUNCTION . "_" . $METHOD . "_times.txt", $times);
 }
 
 if (in_array("errors", $scripts)) {
     include "errors.php";
     file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_errors.gpl", $output);
+    file_put_contents("plots/" . $FUNCTION . "_" . $METHOD . "_runge-errors.gpl", $plot_output);
     file_put_contents("orders/" . $FUNCTION . "_" . $METHOD . "_orders.txt", $order_output);
+    file_put_contents("errors/" . $FUNCTION . "_" . $METHOD . "_errors.txt", $errors_output);
     file_put_contents("runge-errors/" . $FUNCTION . "_" . $METHOD . "_errors.txt", $runge_output);
 }
 ?>

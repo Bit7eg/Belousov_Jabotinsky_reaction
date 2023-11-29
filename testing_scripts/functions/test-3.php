@@ -11,6 +11,6 @@ function f(float $x, float $y): float {
     $der_phi = cos($x) - 2*pi()*sin(2*pi()*$x);
     $k = 6.0;
 
-    return $der_phi + $k*($y - phi($x));
+    return $der_phi + $k*($y - phi($x))**2;
 }
 ?>

@@ -1,0 +1,14 @@
+{
+    "name": "bit7eg/belousov_jabotinsky_reaction",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Bit7eg",
+            "email": "stonysyrop@gmail.com"
+        }
+    ],
+    "require": {
+        "lisachenko/z-engine": "^0.9.1",
+        "lisachenko/native-php-matrix": "^0.2.0"
+    }
+}
